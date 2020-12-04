@@ -1,6 +1,6 @@
-package jr.hexmap;
+package net.reidemeister.hexmap;
 
-import jr.util.*;
+import net.reidemeister.util.*;
 
 import java.awt.*;
 import java.awt.event.*; 
@@ -81,7 +81,7 @@ public class Map extends javax.swing.JComponent {
 		makeMap (X, Y);
 		oldX = oldY = 1;
 		hexnumberColor = Color.white;
-		Image img = imageFac.loadImage ("jr/hexmap/mousemap.gif");
+		Image img = imageFac.loadImage ("net/reidemeister/hexmap/mousemap.gif");
 		if (img == null)
 			;
 		mousemap = new BufferedImage (68, 75, BufferedImage.TYPE_INT_RGB);
@@ -115,6 +115,7 @@ public class Map extends javax.swing.JComponent {
 	 */
 	public void makeMap (int x, int y) {
 		System.out.print ("Initialising map (" + x + "," + y + ") ");	
+		Dimension d = getPreferredSize ();
 		X_Size = x; Y_Size = y;
 		map = new Hex [x+1][y+1];
 		for (int i = 0; i <= x; i++) {
@@ -128,6 +129,9 @@ public class Map extends javax.swing.JComponent {
 		picSizeX = 67 + (49 * (X_Size-1));
 		picSizeY = 29 + (59 * Y_Size);
 		initMap ();
+		firePropertyChange("preferredSize", d, getPreferredSize ());
+		firePropertyChange("maximumSize", d, getPreferredSize ());
+		firePropertyChange("minimumSize", d, getPreferredSize ());
 	} /* makeMap */
 
 	/**
@@ -212,6 +216,7 @@ public class Map extends javax.swing.JComponent {
 	 */
 	public boolean loadMap (java.io.FileReader in){
 		Debug.print ("Map - loadMap - in: " + in);
+		Dimension d = getPreferredSize ();
 		try {
 			System.out.print ("Loading map ");
 			BufferedReader inp = new BufferedReader (in);
@@ -280,6 +285,9 @@ public class Map extends javax.swing.JComponent {
 		} catch (Exception e) {
 			return (false);
 		} /* catch */
+		firePropertyChange("preferredSize", d, getPreferredSize ());
+		firePropertyChange("maximumSize", d, getPreferredSize ());
+		firePropertyChange("minimumSize", d, getPreferredSize ());
 		return (true);
 	} /* saveMap */
 
@@ -466,6 +474,7 @@ public class Map extends javax.swing.JComponent {
 		setWood (X, Y, Hex.WOOD_NOTHING);
 		setGround (X, Y, Hex.GROUND_NOTHING);
 		setSpecial (X, Y, Hex.SPECIAL_NOTHING);
+		setBuilding (X, Y, Hex.BUILDING_NOTHING);
 		setRough (X, Y, false);
 		setStreet(X, Y, 0);
 		setRiver(X, Y, 0);

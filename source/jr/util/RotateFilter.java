@@ -1,7 +1,7 @@
 /*
  * This file is the same in 1.0 and 1.1.
  */
-package jr.util;
+package net.reidemeister.util;
  
 import java.awt.image.ColorModel;
 import java.awt.image.ImageFilter;

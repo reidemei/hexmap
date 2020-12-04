@@ -1,4 +1,4 @@
-package jr.hexmap;
+package net.reidemeister.hexmap;
 
 public class Unit 
 		extends java.lang.Object

@@ -1,6 +1,6 @@
-package jr.hexmap;
+package net.reidemeister.hexmap;
 
-import jr.util.*;
+import net.reidemeister.util.*;
 
 import javax.swing.*;
 import java.awt.*;
@@ -23,7 +23,7 @@ public class StartUp
 				Dimension x = getToolkit ().getScreenSize ();
 				MediaTracker mt = new MediaTracker(this);
 				try {
-						img = getToolkit ().getImage (this.getClass ().getClassLoader ().getSystemResource("jr/hexmap/startup.gif"));
+						img = getToolkit ().getImage (this.getClass ().getClassLoader ().getSystemResource("net/reidemeister/hexmap/startup.gif"));
 						mt.addImage (img, 0);
 				} catch (Exception e) {}
 				try {

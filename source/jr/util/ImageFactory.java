@@ -1,4 +1,4 @@
-package jr.util;
+package net.reidemeister.util;
  
 import java.awt.*;
 import java.awt.image.*;

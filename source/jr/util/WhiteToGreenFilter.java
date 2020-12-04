@@ -1,4 +1,4 @@
-package jr.util;
+package net.reidemeister.util;
 
 import Acme.JPM.Filters.*;
 import java.awt.image.*;

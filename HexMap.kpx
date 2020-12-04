@@ -9,13 +9,16 @@
 <value>"121"</value>
 </productversion>
 </versioninfo>
-<path>"D:\privat\Projekte\HexMap\"</path>
+<path>"D:\privat\projekte\hexmap\"</path>
 <classpaths>
 <classpath enabled="1">
 <value>"&lt;Project Directory&gt;\output"</value>
 </classpath>
 </classpaths>
 <xbootclasspaths>
+<xbootclasspath checked="1">
+<name>"none"</name>
+</xbootclasspath>
 </xbootclasspaths>
 <profile>
 <name>"JDK 1.2.2"</name>
@@ -26,7 +29,7 @@
 <items>
 <folder>
 <name>"HexMap"</name>
-<relativepath>"HexMap.kpx"</relativepath>
+<relativepath>"hexmap\HexMap.kpx"</relativepath>
 <scmstatus id="0">
 <userstring>""</userstring>
 <userinteger>"0"</userinteger>

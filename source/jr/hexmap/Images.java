@@ -1,4 +1,4 @@
-package jr.hexmap;
+package net.reidemeister.hexmap;
 
 public class Images
 		extends java.lang.Object

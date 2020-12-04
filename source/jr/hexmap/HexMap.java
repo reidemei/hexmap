@@ -1,6 +1,6 @@
-package jr.hexmap;
+package net.reidemeister.hexmap;
 
-import jr.util.*;
+import net.reidemeister.util.*;
 
 import javax.swing.*;
 import javax.swing.border.*;
@@ -24,11 +24,35 @@ public class HexMap extends JFrame implements WindowListener,
 											  MouseMotionListener, 
 											  TreeSelectionListener {
 	/** the Version */
-	public final static String VERSION = "0.9.5";
+	public final static String VERSION = "0.9.6";
 	/** date of building the app */
-	public final static String BUILD = "2001-01-27";
-	/** die ScrollPane für den Map */
-	private JScrollPane scroll;
+	public final static String BUILD = "2001-03-24";
+	/** selected item is delete */
+	public final static int TYPE_DELETE = -1;
+	/** selected item is level */
+	public final static int TYPE_LEVEL = 0;
+	/** selected item is wood */
+	public final static int TYPE_WOOD = 1;
+	/** selected item is ground */
+	public final static int TYPE_GROUND = 2;
+	/** selected item is building */
+	public final static int TYPE_BUILDING = 3;
+	/** selected item is special */
+	public final static int TYPE_SPECIAL = 4;
+	/** selected item is street */
+	public final static int TYPE_STREET = 5;
+	/** selected item is river */
+	public final static int TYPE_RIVER = 6;
+	/** selected item is unit */
+	public final static int TYPE_UNIT = 7;
+	/** selected item is rough */
+	public final static int TYPE_ROUGH = 8;
+	/** selected item is flag */
+	public final static int TYPE_FLAG = 9;
+	/** selected item is text */
+	public final static int TYPE_TEXT = 10;
+	/** the tpe of the selected item */
+	private int type;
 
 	/**
 	 *  Constructor
@@ -41,14 +65,14 @@ public class HexMap extends JFrame implements WindowListener,
 		System.out.println ("");
 		System.out.println ("    Hexfield Map Editor " + VERSION + " build " + BUILD);
 		System.out.println ("    (c) 1998-2001 Jan Reidemeister (J.R.@gmx.de)");
-		System.out.println ("    http://JanR.home.pages.de\n");
+		System.out.println ("    http://www.reidemeister.net\n");
 		this.addWindowListener (this);
 		// set the window-position (works only on Win, as far i hava seen)
 		this.setSize (685,495);
 		Dimension x = getToolkit ().getScreenSize ();
 //		this.setLocation (((int) (x.getSize ().width / 2)) - 335, ((int) (x.getSize ().height / 2)) - 225);
 //		this.setResizable (false);
-		this.setIconImage (getToolkit ().getImage (this.getClass ().getClassLoader ().getSystemResource("jr/hexmap/icon.gif")));
+		this.setIconImage (getToolkit ().getImage (this.getClass ().getClassLoader ().getSystemResource("net/reidemeister/hexmap/icon.gif")));
 		startup.setText ("Loading units.");
 		loadUnits ();				
 		startup.setText ("Loading images.");
@@ -206,6 +230,8 @@ public class HexMap extends JFrame implements WindowListener,
 		Images.flag = imageFac.cropImage (x, 272, 118, 67, 59);
 		System.out.print (".");	
 		Images.swamp = imageFac.cropImage (x, 340, 118, 67, 59);
+		System.out.print (".");	
+		Images.ruins = imageFac.cropImage (w, 272, 0, 67, 59);
 		System.out.print (".");	
 		System.out.println (" Done.");
 	} /* loadImages */
@@ -418,7 +444,7 @@ public class HexMap extends JFrame implements WindowListener,
 		pCenter.setBorder (new EtchedBorder ());
 		pCenter.setLayout (new BorderLayout ());
 //		map.setBorder (new EtchedBorder ());
-		scroll = new JScrollPane (map, 
+		JScrollPane scroll = new JScrollPane (map, 
 						JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, 
 						JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
 		pCenter.add (scroll, BorderLayout.CENTER);
@@ -447,9 +473,19 @@ public class HexMap extends JFrame implements WindowListener,
 		pImg.add (pText, BorderLayout.CENTER);
 		pImg.setMinimumSize (new Dimension (142, 70));
 		pImg.setPreferredSize (new Dimension (142, 70));
+		// FastMap
+//		JPanel pFastMap = new JPanel (new BorderLayout ());
+//		pFastMap.setBorder (new EtchedBorder ());
+//		pFastMap.setMinimumSize (new Dimension (142, 100));
+//		pFastMap.setPreferredSize (new Dimension (142, 100));
+//		fastMap = new JLabel ();
+//		fastMap.setHorizontalAlignment (SwingConstants.CENTER);
+//		pFastMap.add (fastMap, BorderLayout.CENTER);
+//		updateFastMap ();
 		// Tree - tree and icon
 		JPanel pTree = new JPanel ();
 		pTree.setLayout (new BorderLayout ());
+//		pTree.add (pFastMap, BorderLayout.NORTH);
 		pTree.add (new JScrollPane (tree), BorderLayout.CENTER);
 		pTree.add (pImg, BorderLayout.SOUTH);
 		// Status 
@@ -518,6 +554,12 @@ public class HexMap extends JFrame implements WindowListener,
 			System.out.println (e);
 		} /* catch */
 	} /* main */
+
+	private void updateFastMap () {		
+		Image i = map.getImage ();
+		int scalefactor = Math.max (i.getWidth (this) / 132, i.getHeight (this) / 90);
+		fastMap.setIcon (new ImageIcon (map.getImage ().getScaledInstance (i.getWidth (this) / scalefactor, i.getHeight (this) / scalefactor, Image.SCALE_FAST)));
+	} /* updateFastMap */
 
 	/** does nothing */		
 	public void windowOpened (WindowEvent e) {}
@@ -758,7 +800,7 @@ public class HexMap extends JFrame implements WindowListener,
 		if (e.getActionCommand ().equals ("save")) {
 			this.setTitle ("Hexfield Map Editor " + VERSION + " - Saving Map ...");
 			JFileChooser chooser = new JFileChooser (); 
-			jr.util.ExampleFileFilter filter = new jr.util.ExampleFileFilter ("map","Hexfield map");
+			net.reidemeister.util.ExampleFileFilter filter = new net.reidemeister.util.ExampleFileFilter ("map","Hexfield map");
 			chooser.addChoosableFileFilter (filter);
 			chooser.setFileFilter (filter);
 			chooser.removeChoosableFileFilter (chooser.getAcceptAllFileFilter ());
@@ -795,8 +837,8 @@ public class HexMap extends JFrame implements WindowListener,
 		if (e.getActionCommand ().equals ("load")) {
 			this.setTitle ("Hexfield Map Editor " + VERSION + " - Loading Map ...");
 			JFileChooser chooser = new JFileChooser(); 
-			jr.util.ExampleFileFilter filter;
-			filter = new jr.util.ExampleFileFilter ("map","Hexfield map");
+			net.reidemeister.util.ExampleFileFilter filter;
+			filter = new net.reidemeister.util.ExampleFileFilter ("map","Hexfield map");
 			chooser.addChoosableFileFilter(filter);
 			chooser.setFileFilter(filter);
 			chooser.removeChoosableFileFilter(chooser.getAcceptAllFileFilter());
@@ -809,9 +851,8 @@ public class HexMap extends JFrame implements WindowListener,
 						JOptionPane.showMessageDialog (
 							this, 
 							"The map was loaded!\n\n" +
-							"Sorry, but the ScrollBars don't reflect the new size\n" +
-							"(Can anybody tell me why???), so you have to resize \n" +
-							"the application to do so :-(.\n",
+							"Sorry, but the ScrollBars don't reflect the new size,\n" +
+							"so you have to resize the application to do so :-(.\n",
 							"Info", 
 							JOptionPane.INFORMATION_MESSAGE);
 						checkBoxHex.setSelected (map.getShowHexNumbers ());
@@ -880,8 +921,7 @@ public class HexMap extends JFrame implements WindowListener,
 								d, 
 								"A new map was created.\n\n" +
 								"Sorry, but the ScrollBars don't reflect the new size\n" +
-								"(Can anybody tell me why???), so you have to resize \n" +
-								"the application to do so :-(.\n",
+								"so you have to resize the application to do so :-(.\n",
 								"Info", 
 								JOptionPane.INFORMATION_MESSAGE);
 						} /* if */
@@ -916,7 +956,7 @@ public class HexMap extends JFrame implements WindowListener,
 					"A tool to create hexfield maps. \nSupports userdefined graphics and units.\n\n" + 
 					"Version: " + VERSION + " (" + BUILD + ") \n" +
 					"(c) 1998-2001 by Jan Reidemeister <J.R.@gmx.de>\n" +
-					"http://JanR.home.pages.de\n\n" +
+					"http://www.reidemeister.net\n\n" +
 					"Refer to the readme.txt for more details.\n\n" + 
 					"THIS SOFTWARE IS PROVIDED ON AN \"AS IS\"\nBASIS WITHOUT WARRANTY OF ANY KIND." ,
 					"Hexfield Map Editor", JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE, null, options, "Dismiss");
@@ -925,9 +965,9 @@ public class HexMap extends JFrame implements WindowListener,
 		if (e.getActionCommand ().equals ("export")) {
 			this.setTitle ("Hexfield Map Editor " + VERSION + " - Export Image ...");
 			JFileChooser chooser = new JFileChooser (); 
-			jr.util.ExampleFileFilter filtergif = new jr.util.ExampleFileFilter ("gif", "GIF Images");
+			net.reidemeister.util.ExampleFileFilter filtergif = new net.reidemeister.util.ExampleFileFilter ("gif", "GIF Images");
 			chooser.addChoosableFileFilter (filtergif);
-			jr.util.ExampleFileFilter filterpng = new jr.util.ExampleFileFilter ("png", "PNG Images");
+			net.reidemeister.util.ExampleFileFilter filterpng = new net.reidemeister.util.ExampleFileFilter ("png", "PNG Images");
 			chooser.addChoosableFileFilter (filterpng);
 			chooser.setFileFilter (filtergif);
 			chooser.removeChoosableFileFilter (chooser.getAcceptAllFileFilter ());
@@ -1094,23 +1134,30 @@ public class HexMap extends JFrame implements WindowListener,
 			case TYPE_TEXT: map.setText (text.getText ()); break;
 			case TYPE_DELETE: map.emptyHex (); break;
 		} /* switch */
+//		updateFastMap ();
 	} /* mouseClicked */
 	
+	/** does nothing */	
 	public void mouseMoved (MouseEvent e) {}
 	
 	public void mouseDragged (MouseEvent e) {
 			mouseClicked (e);
 	} /* mouseDragged */
-	
+
+	/** does nothing */	
 	public void mousePressed (MouseEvent e) {}
 	
+	/** does nothing */	
 	public void mouseEntered (MouseEvent e) {}
 	
+	/** does nothing */	
 	public void mouseExited (MouseEvent e) {}
 	
+	/** does nothing */	
 	public void mouseReleased (MouseEvent e) {}
 	
 	private JLabel img;
+	private JLabel fastMap;
 	private JLabel label;
 	private JLabel status;
 	private JTree tree;
@@ -1123,19 +1170,6 @@ public class HexMap extends JFrame implements WindowListener,
 	private int mod;
 	private int street;
 	private int river;
-	private int type;
-	public final static int TYPE_DELETE = -1;
-	public final static int TYPE_LEVEL = 0;
-	public final static int TYPE_WOOD = 1;
-	public final static int TYPE_GROUND = 2;
-	public final static int TYPE_BUILDING = 3;
-	public final static int TYPE_SPECIAL = 4;
-	public final static int TYPE_STREET = 5;
-	public final static int TYPE_RIVER = 6;
-	public final static int TYPE_UNIT = 7;
-	public final static int TYPE_ROUGH = 8;
-	public final static int TYPE_FLAG = 9;
-	public final static int TYPE_TEXT = 10;
 	private int rotate;
 	private int color;
 	private int unit;

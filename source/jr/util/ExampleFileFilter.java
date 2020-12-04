@@ -11,7 +11,7 @@
  * it only in accordance with the terms of the license agreement
  * you entered into with Sun.
  */
-package jr.util;
+package net.reidemeister.util;
 
 import java.io.File;
 import java.util.Hashtable;

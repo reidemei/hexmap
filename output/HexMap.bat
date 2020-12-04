@@ -1,1 +1,1 @@
-java -cp . jr.hexmap.HexMap 
+start javaw -cp . net.reidemeister.hexmap.HexMap 

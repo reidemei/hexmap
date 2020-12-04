@@ -1,4 +1,4 @@
-package jr.util;
+package net.reidemeister.util;
 
 /**
  *  Prints out debug-messages.

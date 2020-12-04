@@ -1,4 +1,4 @@
-package jr.hexmap;
+package net.reidemeister.hexmap;
 
 public class Hex extends java.lang.Object implements java.io.Serializable {
 	

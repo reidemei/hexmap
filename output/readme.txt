@@ -1,9 +1,9 @@
 
                   ******************************************
-                  ****     Hexfield Map Editor 0.9.5    ****
+                  ****     Hexfield Map Editor 0.9.6    ****
                   ****  (c) 1998-2001 Jan Reidemeister  ****
                   ****        E-mail: J.R.@gmx.de       ****
-                  ****  WWW: http://JanR.home.pages.de  ****
+                  **** WWW: http://www.reidemeister.net ****
                   ******************************************
 
 
@@ -19,8 +19,7 @@
     Disclaimer _____________________________________________________ 06
     Getting The Program ____________________________________________ 07
     Contact ________________________________________________________ 08
-    About The Author _______________________________________________ 09
-    History, What's New, To Do, Known Problems _____________________ 10
+    History, What's New, To Do, Known Problems _____________________ 09
 
 **********************                                             ************
 **** INTRODUCTION ***************************************************** 01 ****
@@ -74,19 +73,20 @@
     
       Using:
     ++++++++++++++++++++++++++
-    On a Windows PC start the hexmap.bat. Notice, that depending on your 
-    java version it can happen, that you have to change the CLASSPATH to
-    start HexMap. If the JRE is not in your PATH, you have to edit the 
-    batchfile and insert the path to the java.exe. On any other system 
-    execute the java-interpreter in the directory you unziped the files 
-    as follows (maybe you have to set the CLASSPATH):
+    On a Windows PC start the hexmap.bat. 
+    If that won't work, you have to edit the batchfile. First remove the
+	'start' and see if there is a descriptive errormessage. Check that 
+	'javaw.exe' can be executed from that directory (PATH-settings).
+
+    On any other system execute the java-interpreter in the directory 
+    you unziped the files as follows (maybe you have to set the CLASSPATH):
     
-    java jr.hexmap.HexMap
+    java net.reidemeister.hexmap.HexMap
     
     Possible options are the look and feel for the swing-GUI.
     That works only if the nessessary classes are on your system.
     
-    java jr.hexmap.HexMap {windows|metal|motif|mac}
+    java net.reidemeister.hexmap.HexMap {windows|metal|motif|mac}
     
     Please note, that some operations on a complete map (hex-numbers, 
     unit-names, map-loading) may take some time, depending on your 
@@ -99,11 +99,11 @@
     images-directory. It would be nice, if you send me your pictures.
 
     img.gif    - all levelgraphics, specials, wood (the image between 
-                 asphalt and fire must left free) 
-    street.gif - the streets (remember, that they must fit together)
+                 asphalt and fire has to be empty) 
+    street.gif - the streets (remember, they must fit together)
     river.gif  - the rivers (same as streets)
     build.gif  - the buildings (the last free is for ruins, I am 
-                 looking for an image) 
+                 looking for an image)
 
     !! IMPORTANT !!    
     Remember on the 256-color limit of GIF. That means, that the colors in 
@@ -149,7 +149,8 @@
     Selling for money is PROHIBITED without the author's prior permission.
 
     This software package is FREEWARE. You can use it as long and how 
-    often you wish.
+    often you wish for any purpose. 
+    If you are interested in the sourcecode of hexmap, simply email me.
 
 ********************                                               ************
 **** DISCLAIMER ******************************************************* 06 ****
@@ -169,8 +170,8 @@
 **** GETTING THE PROGRAM ********************************************** 07 ****
 *****************************                                      ************
 
-    You can download the program at:
-    http://wwwiti.cs.uni-magdeburg.de/~reidemei/hexmap
+    You can download the actual version at:
+    http://www.reidemeister.net/hexmap
     
 *****************                                                  ************
 **** CONTACT ********************************************************** 08 ****
@@ -182,28 +183,14 @@
 
       E-mail address:
     +++++++++++++++++++
-    J.R.@gmx.de (will always forward to the right address)
-    reidemei@iti.cs.uni-magdeburg.de
+    J.R.@gmx.de
 
       WWW homepage:
     +++++++++++++++++++
-    http://JanR.home.page.de (will always direct you to the right page)
-    http://www-wi.cs.uni-magdeburg.de/~reidemei
-
-      ICQ:
-    ++++++++++++++++++
-    12424536 (but at the moment I'm not so often online)
-
-**************************                                         ************
-**** ABOUT THE AUTHOR ************************************************* 10 ****
-**************************                                         ************
-
-    Born in 1976 and lives in Magdeburg (Germany).
-    At the moment Student of Magdeburg University 
-    (http://www.uni-magdeburg.de).
+    http://www.reidemeister.net
 
 ****************************************************               ************
-**** HISTORY, WHAT'S NEW, TO DO, KNOWN PROBLEMS *********************** 11 ****
+**** HISTORY, WHAT'S NEW, TO DO, KNOWN PROBLEMS *********************** 09 ****
 ****************************************************               ************
 
       History:
@@ -215,7 +202,6 @@
        03/1999 -           adding many features
     06/04/1999 - 0.9     - first public release
     05/10/1999 - 0.9.1   - some minor internal changes, now working with 1.1 JDK 
-                           (1.1.7 tested)
     22/01/2000 - 0.9.2   - added swamp image, more levels and some units
     08/04/2000 - 0.9.2.1 - some more units
     21/01/2001 - 0.9.3   - some code rewriting, resizeable Window, 
@@ -223,33 +209,15 @@
                            custom sized maps, changed fileformat
                            I think, it wont work with JRE 1.1 any longer, but not tested.
     22/01/2001 - 0.9.4   - added an PNG-export
-    27/01/2001 - 0.9.5   - different color for hexnumbers, improved calculation of the mouse position
+    27/01/2001 - 0.9.5   - different color for hexnumbers
+                           improved calculation of the mouse position
+    24/03/2001 - 0.9.6   - bugfixing for buildings and ruins, some changes on this file
+                           changed package to reflect new URL
 
       What's new:
     +++++++++++++++++++
-    * You can now resize the window to see more of the map.
-    * I changed the storage of the hexproperties. So now you can combine 
-      any ground with wood, buildings and special items.
-      Unfortunately this required a change in the savefile format. The new format is 
-      textbased (you can have a look at it with an editor, but don't change anything) 
-      and more flexible about future enhancements. A converter for your old maps 
-      is included. In the converter-subdir execute:
-        java jr.hexmap.Converter oldfile newfile
-      where 'oldfile' is the old map file and 'newfile' the new one. If you have 
-      backslashs ('\') in your file path, you have to escape them with a second 
-      one ('\\').
-      If you have problems converting your maps, you can email them to me and I 
-      will try to convert them for you.
-    * Create maps of any size up to 50x50. (Actually there is no limit in the 
-      maximum size of the map, but a 50x50 map takes about 47 MB RAM on my computer.
-      The big part is the uncompressed image in memory. And because 64 MB is the 
-      normal limit for an java-application you have to increase the memorylimit of 
-      the java interpreter to create bigger maps. Execute java.exe without any param 
-      at a prompt and see if you can find the right switch for your version
-      (1.2/1.3: '-Xmx??m' with ?? for the max size in MB).
-    * PNG-Export
-    * set the color for the hexnumbers
-    * improved calculation of the mouse position
+    * new package
+    * bugfixes
  
       To do:
     +++++++++++++++++++
@@ -275,4 +243,4 @@
     * After loading a map or creating a new one the scrollbars don't reflect the 
       new size. You have to resize the app to force them to do so.
 
-2001-01-27 Jan Reidemeister
+2001-03-24 Jan Reidemeister
