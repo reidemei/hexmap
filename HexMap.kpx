@@ -159,6 +159,40 @@
 </virtualfolder>
 </virtualfolder>
 <virtualfolder>
+<name>"com"</name>
+<virtualfolder>
+<name>"keypoint"</name>
+<file>
+<dirty>"0"</dirty>
+<relativepath>"source\com\keypoint\PngEncoder.java"</relativepath>
+<editor open="0">
+<selection start="0" end="0">
+</selection>
+<window x="98756224" y="1852402788" width="786436" height="786690">
+</window>
+</editor>
+<scmstatus id="0">
+<userstring>""</userstring>
+<userinteger>"0"</userinteger>
+</scmstatus>
+</file>
+<file>
+<dirty>"0"</dirty>
+<relativepath>"source\com\keypoint\PngEncoderB.java"</relativepath>
+<editor open="0">
+<selection start="0" end="0">
+</selection>
+<window x="0" y="0" width="0" height="0">
+</window>
+</editor>
+<scmstatus id="0">
+<userstring>""</userstring>
+<userinteger>"0"</userinteger>
+</scmstatus>
+</file>
+</virtualfolder>
+</virtualfolder>
+<virtualfolder>
 <name>"jr"</name>
 <virtualfolder>
 <name>"hexmap"</name>

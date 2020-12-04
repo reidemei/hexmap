@@ -24,9 +24,9 @@ public class HexMap extends JFrame implements WindowListener,
 											  MouseMotionListener, 
 											  TreeSelectionListener {
 	/** the Version */
-	public final static String VERSION = "0.9.3";
+	public final static String VERSION = "0.9.4";
 	/** date of building the app */
-	public final static String BUILD = "2001-01-21";
+	public final static String BUILD = "2001-01-22";
 	/** die ScrollPane für den Map */
 	private JScrollPane scroll;
 
@@ -860,36 +860,53 @@ public class HexMap extends JFrame implements WindowListener,
 			Object[] options = {"Dismiss"};
 			JOptionPane.showOptionDialog (
 					this, 
-					"A tool to create hexfield maps. Supports userdefined graphics and units.\n\n" + 
+					"A tool to create hexfield maps. \nSupports userdefined graphics and units.\n\n" + 
 					"Version: " + VERSION + " (" + BUILD + ") \n" +
 					"(c) 1998-2001 by Jan Reidemeister <J.R.@gmx.de>\n" +
 					"http://JanR.home.pages.de\n\n" +
+					"Refer to the readme.txt for more details.\n" + 
 					"THIS SOFTWARE IS PROVIDED ON AN \"AS IS\"\nBASIS WITHOUT WARRANTY OF ANY KIND." ,
 					"Hexfield Map Editor", JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE, null, options, "Dismiss");
 			return;
 		} /* if */
 		if (e.getActionCommand ().equals ("export")) {
-			this.setTitle ("Hexfield Map Editor " + VERSION + " - Saving Image ...");
+			this.setTitle ("Hexfield Map Editor " + VERSION + " - Export Image ...");
 			JFileChooser chooser = new JFileChooser (); 
-			jr.util.ExampleFileFilter filtergif = new jr.util.ExampleFileFilter ("gif","Gif-Images");
+			jr.util.ExampleFileFilter filtergif = new jr.util.ExampleFileFilter ("gif", "GIF Images");
 			chooser.addChoosableFileFilter (filtergif);
+			jr.util.ExampleFileFilter filterpng = new jr.util.ExampleFileFilter ("png", "PNG Images");
+			chooser.addChoosableFileFilter (filterpng);
 			chooser.setFileFilter (filtergif);
 			chooser.removeChoosableFileFilter (chooser.getAcceptAllFileFilter ());
 			int returnVal = chooser.showSaveDialog (this.getContentPane ());
 			if(returnVal == JFileChooser.APPROVE_OPTION) {
+				Debug.print ("HexMap - actionPerformed - exporting map: " + chooser.getSelectedFile ());
+				String file = chooser.getSelectedFile ().getName ();
 				try {
-					java.io.FileOutputStream out;
-					Acme.JPM.Encoders.ImageEncoder coder = null;
-					String file = chooser.getSelectedFile ().getName ();
+					java.io.FileOutputStream out = null;
 					if (chooser.getFileFilter() == filtergif) {
-						Debug.print ("HexMap - actionPerformed - exporting map: " + chooser.getSelectedFile ());
 						if (file.endsWith(".gif"))
 							out = new java.io.FileOutputStream (chooser.getSelectedFile ());
 						else
 							out = new java.io.FileOutputStream (new java.io.File (chooser.getSelectedFile ().getParent (), file + ".gif"));
-						coder = new Acme.JPM.Encoders.GifEncoder (map.getImage (), out);
+						Acme.JPM.Encoders.ImageEncoder coder = new Acme.JPM.Encoders.GifEncoder (map.getImage (), out);
+						coder.encode ();
 					} /* if */
-					coder.encode ();
+					if (chooser.getFileFilter() == filterpng) {
+						if (file.endsWith(".png"))
+							out = new java.io.FileOutputStream (chooser.getSelectedFile ());
+						else
+							out = new java.io.FileOutputStream (new java.io.File (chooser.getSelectedFile ().getParent (), file + ".png"));
+						byte[] pngbytes;
+						com.keypoint.PngEncoderB coder = new com.keypoint.PngEncoderB (
+								(BufferedImage) map.getImage (),
+								com.keypoint.PngEncoder.NO_ALPHA,
+								0, 1);
+						pngbytes = coder.pngEncode();
+						out.write (pngbytes);
+					} /* if */
+					out.flush ();
+					out.close ();
 				} catch (Exception err) {}
 				System.out.println("Done. File " + chooser.getSelectedFile().getName() + " saved."); 
 			} /* if */

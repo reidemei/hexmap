@@ -1,6 +1,6 @@
 
                   ******************************************
-                  ****     Hexfield Map Editor 0.9.3    ****
+                  ****     Hexfield Map Editor 0.9.4    ****
                   ****  (c) 1998-2001 Jan Reidemeister  ****
                   ****        E-mail: J.R.@gmx.de       ****
                   ****  WWW: http://JanR.home.pages.de  ****
@@ -44,7 +44,8 @@
     * fire and smog
     * asphalt and rough terrain
     * flags and custom text for every hexfield
-    * save maps and export to GIF
+    * save/load maps 
+    * export to GIF or PNG
     * custom units, that can be colored and rotated
 
     All the graphics can be changed, so that you can customize the maps to
@@ -54,10 +55,8 @@
 **** REQUIREMENTS ***************************************************** 03 ****
 **********************                                             ************
 
-    All you need is a Java 1.1 (1.1.7 tested) or 2 (aka 1.2/1.3) runtime 
-    environment. You can get it from http://java.sun.com
-    If you want to use a 1.1 than you also need the Swing-classes 
-    (javax.swing.*).
+    All you need is a Java 2 (aka 1.2/1.3) runtime environment. You 
+    can get it free from 'http://java.sun.com'.
     But don't ask me about installing a JRE.
 
 ***************                                                    ************
@@ -66,7 +65,7 @@
 
       Installation:
     ++++++++++++++++++++++++++
-    Simply unzip the hexmap.zip to a directory of your wish.
+    Simply unzip the hexmap-???.zip to a directory of your wish.
 
       Uninstall:
     ++++++++++++++++++++++++++
@@ -75,12 +74,12 @@
     
       Using:
     ++++++++++++++++++++++++++
-    On a WindowsPC start the hexmap.bat. Notice, that depending on your 
+    On a Windows PC start the hexmap.bat. Notice, that depending on your 
     java version it can happen, that you have to change the CLASSPATH to
-	start HexMap. If the JRE is not in your PATH, you have to edit the 
-	batchfile and insert the path to the java.exe. On any other system 
-	execute the java-interpreter in the directory you unziped the files 
-	as follows:
+    start HexMap. If the JRE is not in your PATH, you have to edit the 
+    batchfile and insert the path to the java.exe. On any other system 
+    execute the java-interpreter in the directory you unziped the files 
+    as follows (maybe you have to set the CLASSPATH):
     
     java jr.hexmap.HexMap
     
@@ -91,7 +90,8 @@
     
     Please note, that some operations on a complete map (hex-numbers, 
     unit-names, map-loading) may take some time, depending on your 
-    system it can be, the HexMap freezes for some seconds.
+    system it can be, the HexMap freezes for some seconds. Also the 
+    export to GIF or PNG may take some time.
 
       Changing the graphics:
     ++++++++++++++++++++++++++
@@ -124,14 +124,20 @@
 **** COPYRIGHT ******************************************************** 05 ****
 *******************                                                ************
 
-    The entire contents of this software package, excluding the Acme
-    (http://www.acme.com/java/) files, two utility-classes (FileFilter
-    and RotateFilter) from the Java-Tutorial 
-    (http://java.sun.com/docs/books/tutorial/) and the graphic set is
-    copyrighted by Jan Reidemeister.
+    The entire contents of this software package, excluding the Export
+    Encoders, two utility-classes (FileFilter and RotateFilter) from 
+    the Java-Tutorial (http://java.sun.com/docs/books/tutorial/) and 
+    the graphic set is copyrighted by Jan Reidemeister.
 
     Most of the graphics supplied with HexMap are taken from Nico's 
-    BattleTech PBEM. Take a look at 'http://members.aol.com/PBEMnicoh/PBEMmerc'.
+    BattleTech PBEM. Have a look at:
+        http://members.tripod.de/BT_PBEMnicoh/index.htm
+
+    The GIF export encoder is from Acme (http://www.acme.com/java/).
+
+    The PNG export encoder is from J. David Eisenberg (david@catcode.com, 
+    http://www.keypoint.com/) under GNU Lesser General Public License
+    (http://www.gnu.org/copyleft/lesser.html).
 
     You may not modify, disassemble or reverse engineer the program in
     any way. You are free to distribute the software (software distributors 
@@ -215,6 +221,8 @@
     21/01/2001 - 0.9.3   - some code rewriting, resizeable Window, 
                            more combinations of ground/wood/buildings/special items
                            custom sized maps, changed fileformat
+                           I think, it wont work with JRE 1.1 any longer, but not tested.
+    22/01/2001 - 0.9.4   - added an PNG-export
 
       What's new:
     +++++++++++++++++++
@@ -238,6 +246,7 @@
       the java interpreter to create bigger maps. Execute java.exe without any param 
       at a prompt and see if you can find the right switch for your version
       (1.2/1.3: '-Xmx??m' with ?? for the max size in MB).
+    * PNG-Export
  
       To do:
     +++++++++++++++++++
@@ -263,4 +272,4 @@
     * After loading a map or creating a new one the scrollbars don't reflect the 
       new size. You have to resize the app to force them to do so.
 
-2001-01-21 Jan Reidemeister
+2001-01-22 Jan Reidemeister
