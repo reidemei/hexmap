@@ -24,9 +24,9 @@ public class HexMap extends JFrame implements WindowListener,
 											  MouseMotionListener, 
 											  TreeSelectionListener {
 	/** the Version */
-	public final static String VERSION = "0.9.4";
+	public final static String VERSION = "0.9.5";
 	/** date of building the app */
-	public final static String BUILD = "2001-01-22";
+	public final static String BUILD = "2001-01-27";
 	/** die ScrollPane für den Map */
 	private JScrollPane scroll;
 
@@ -234,43 +234,80 @@ public class HexMap extends JFrame implements WindowListener,
 		menuBar = new JMenuBar();
 		setJMenuBar (menuBar);
 		menu = new JMenu ("File");
+		menu.setMnemonic ('F');
 		menuBar.add (menu);
 		menuItem = new JMenuItem ("New");
+		menuItem.setMnemonic ('N');
 		menuItem.setActionCommand ("new");
 		menuItem.setAccelerator (KeyStroke.getKeyStroke (KeyEvent.VK_N, ActionEvent.CTRL_MASK));
 		menuItem.addActionListener (this);
 		menu.add (menuItem);
 		menu.addSeparator ();
 		menuItem = new JMenuItem ("Load");
+		menuItem.setMnemonic ('L');
 		menuItem.setActionCommand ("load");
 		menuItem.setAccelerator (KeyStroke.getKeyStroke (KeyEvent.VK_L, ActionEvent.CTRL_MASK));
 		menuItem.addActionListener (this);
 		menu.add (menuItem);
 		menuItem = new JMenuItem("Save as");
+		menuItem.setMnemonic ('S');
 		menuItem.setActionCommand ("save");
 		menuItem.setAccelerator (KeyStroke.getKeyStroke (KeyEvent.VK_S, ActionEvent.CTRL_MASK));
 		menuItem.addActionListener (this);
 		menu.add (menuItem);
 		menu.addSeparator ();
-		menuItem = new JMenuItem ("Export GIF");
+		menuItem = new JMenuItem ("Export GIF/PNG");
+		menuItem.setMnemonic ('E');
 		menuItem.setActionCommand ("export");
 		menuItem.setAccelerator (KeyStroke.getKeyStroke (KeyEvent.VK_E, ActionEvent.CTRL_MASK));
 		menuItem.addActionListener (this);
 		menu.add (menuItem);
 		menu.addSeparator ();
 		menuItem = new JMenuItem ("Quit");
+		menuItem.setMnemonic ('q');
 		menuItem.setActionCommand ("quit");
 		menuItem.setAccelerator (KeyStroke.getKeyStroke (KeyEvent.VK_X, ActionEvent.CTRL_MASK));
 		menuItem.addActionListener (this);
 		menu.add (menuItem);		
 		menu = new JMenu ("Options");
-		menuBar.add (menu);
-		checkBoxHex = new JCheckBoxMenuItem ("Show HexNumbers");
+		menu.setMnemonic ('O');
+		menuBar.add (menu);		
+		checkBoxHex = new JCheckBoxMenuItem ("Show hexfield numbers");
+		checkBoxHex.setMnemonic ('h');
 		checkBoxHex.setSelected (true);
 		checkBoxHex.setActionCommand ("hexnumbers");
 		checkBoxHex.addActionListener (this);
 		menu.add (checkBoxHex);
-		checkBoxUnit = new JCheckBoxMenuItem ("Show UnitNames");
+		JMenu subMenu = new JMenu ("Color for hexfield numbers");
+		subMenu.setMnemonic ('C');
+		menu.add (subMenu);
+		menuItem = new JMenuItem ("White");
+		menuItem.setMnemonic ('W');
+		menuItem.addActionListener (this);
+		menuItem.setActionCommand ("hexnumber.color.white");
+		subMenu.add (menuItem);
+		menuItem = new JMenuItem ("Yellow");
+		menuItem.setMnemonic ('Y');
+		menuItem.addActionListener (this);
+		menuItem.setActionCommand ("hexnumber.color.yellow");
+		subMenu.add (menuItem);
+		menuItem = new JMenuItem ("Red");
+		menuItem.setMnemonic ('R');
+		menuItem.addActionListener (this);
+		menuItem.setActionCommand ("hexnumber.color.red");
+		subMenu.add (menuItem);
+		menuItem = new JMenuItem ("Green");
+		menuItem.setMnemonic ('G');
+		menuItem.addActionListener (this);
+		menuItem.setActionCommand ("hexnumber.color.green");
+		subMenu.add (menuItem);
+		menuItem = new JMenuItem ("Blue");
+		menuItem.setMnemonic ('B');
+		menuItem.addActionListener (this);
+		menuItem.setActionCommand ("hexnumber.color.blue");
+		subMenu.add (menuItem);
+		checkBoxUnit = new JCheckBoxMenuItem ("Show unit names");
+		checkBoxUnit.setMnemonic ('u');
 		checkBoxUnit.setSelected (false);
 		checkBoxUnit.setActionCommand ("unitnames");
 		checkBoxUnit.addActionListener (this);
@@ -281,6 +318,7 @@ public class HexMap extends JFrame implements WindowListener,
 		//				checkBoxLevel.addActionListener (this);
 		//				menu.add (checkBoxLevel);
 		menuItem = new JMenuItem ("Info");
+		menuItem.setMnemonic ('I');
 		menuItem.setActionCommand ("info");
 		menuItem.addActionListener (this);
 		menuBar.add (menuItem);
@@ -704,6 +742,19 @@ public class HexMap extends JFrame implements WindowListener,
 			map.setShowUnitNames (checkBoxUnit.isSelected ());
 			return;
 		} /* if */
+		if (e.getActionCommand ().startsWith ("hexnumber.color")) {
+			if (e.getActionCommand ().equals ("hexnumber.color.white"))
+				map.setHexNumberColor (Color.white);	
+			if (e.getActionCommand ().equals ("hexnumber.color.yellow"))
+				map.setHexNumberColor (Color.yellow);	
+			if (e.getActionCommand ().equals ("hexnumber.color.red"))
+				map.setHexNumberColor (Color.red);	
+			if (e.getActionCommand ().equals ("hexnumber.color.green"))
+				map.setHexNumberColor (Color.green);	
+			if (e.getActionCommand ().equals ("hexnumber.color.blue"))
+				map.setHexNumberColor (Color.blue);	
+			return;
+		} /* if */
 		if (e.getActionCommand ().equals ("save")) {
 			this.setTitle ("Hexfield Map Editor " + VERSION + " - Saving Map ...");
 			JFileChooser chooser = new JFileChooser (); 
@@ -763,6 +814,8 @@ public class HexMap extends JFrame implements WindowListener,
 							"the application to do so :-(.\n",
 							"Info", 
 							JOptionPane.INFORMATION_MESSAGE);
+						checkBoxHex.setSelected (map.getShowHexNumbers ());
+						checkBoxUnit.setSelected (map.getShowUnitNames ());
 						System.out.println("Done. Map " + chooser.getSelectedFile().getName() + " loaded."); 
 					} else {
 						JOptionPane.showMessageDialog (
@@ -864,7 +917,7 @@ public class HexMap extends JFrame implements WindowListener,
 					"Version: " + VERSION + " (" + BUILD + ") \n" +
 					"(c) 1998-2001 by Jan Reidemeister <J.R.@gmx.de>\n" +
 					"http://JanR.home.pages.de\n\n" +
-					"Refer to the readme.txt for more details.\n" + 
+					"Refer to the readme.txt for more details.\n\n" + 
 					"THIS SOFTWARE IS PROVIDED ON AN \"AS IS\"\nBASIS WITHOUT WARRANTY OF ANY KIND." ,
 					"Hexfield Map Editor", JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE, null, options, "Dismiss");
 			return;

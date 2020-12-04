@@ -16,8 +16,50 @@ import java.util.*;
  */ 
 public class Map extends javax.swing.JComponent {
 
-	/** die Version */
-	public final static String VERSION = "1.2";
+	/** the version */
+	public final static String[] LOAD_VERSIONS = {"1.2", "1.3"};
+	/** the version */
+	public final static String VERSION = "1.3";
+	/** int of Color white */
+	public static final int RGB_WHITE = Color.white.getRGB();
+	/** int of Color black */
+	public static final int RGB_BLACK = Color.black.getRGB();
+	/** int of Color red */
+	public static final int RGB_RED = Color.red.getRGB();
+	/** int of Color green */
+	public static final int RGB_GREEN = Color.green.getRGB();
+	/** int of Color blue */
+	public static final int RGB_BLUE = Color.blue.getRGB();
+	/** int of Color yellow */
+	public static final int RGB_YELLOW = Color.yellow.getRGB();
+	/** the color for the hexnumbers */
+	private Color hexnumberColor;
+	/** the image for the mousemap */
+	private BufferedImage mousemap;	
+	/** the size of the map - points */
+	private int picSizeX;
+	/** the size of the map - points */
+	private int picSizeY;
+	/** indicates, if to show the hexnumbers */
+	private boolean hexnumbers;
+	/** indicates, if to show the unitnames */
+	private boolean unitnames;
+	/** size of the map - hexes */
+	public int X_Size;
+	/** size of the map - hexes */
+	public int Y_Size;
+	/** the map-data */
+	private Hex [][] map;
+	/** offscreen-image */
+	private Image dbImage;
+	/** graphic-context of th offscreen-image */
+	private Graphics dbGraphics;
+	/** actual mouseposition */
+	private int oldX;
+	/** actual mouseposition */
+	private int oldY;
+	/** for any imagemanipulation */
+	private ImageFactory imageFac;
 
 	/**
 	 *  Creates a new Map.
@@ -38,7 +80,12 @@ public class Map extends javax.swing.JComponent {
 		enableEvents(AWTEvent.MOUSE_MOTION_EVENT_MASK);
 		makeMap (X, Y);
 		oldX = oldY = 1;
-		setPreferredSize (new Dimension (50 * X_Size + 10, 61 * Y_Size + 10));
+		hexnumberColor = Color.white;
+		Image img = imageFac.loadImage ("jr/hexmap/mousemap.gif");
+		if (img == null)
+			;
+		mousemap = new BufferedImage (68, 75, BufferedImage.TYPE_INT_RGB);
+		mousemap.getGraphics ().drawImage (img, 0, 0, this);
 	} /* constructor */
 
 	/**
@@ -78,6 +125,8 @@ public class Map extends javax.swing.JComponent {
 			System.out.print (".");	
 		} /* for */
 		System.out.println (" Done.");	
+		picSizeX = 67 + (49 * (X_Size-1));
+		picSizeY = 29 + (59 * Y_Size);
 		initMap ();
 	} /* makeMap */
 
@@ -143,6 +192,9 @@ public class Map extends javax.swing.JComponent {
 				} /* for */
 				System.out.print (".");	
 			} /* for */
+			w.write (hexnumberColor.getRGB () + System.getProperty ("line.separator"));
+			w.write (("" + hexnumbers).toUpperCase () + System.getProperty ("line.separator"));
+			w.write (("" + unitnames).toUpperCase () + System.getProperty ("line.separator"));
 			w.flush ();
 			w.close ();
 			System.out.println (" Done.");
@@ -168,10 +220,14 @@ public class Map extends javax.swing.JComponent {
 			// is it for us
 			if (!(s.trim ().equals ("HexMap")))
 				return (false);
-			s = inp.readLine ();
+			String version = inp.readLine ().trim ();
 			System.out.print (".");	
 			// check the version
-			if (!(s.trim ().equals (VERSION)))
+			int count = 0;
+			for (int i = 0; i < LOAD_VERSIONS.length; i++)
+				if (!(version.equals (LOAD_VERSIONS[i])))
+					count++;
+			if (count == LOAD_VERSIONS.length)
 				return (false);
 			// now get the size	
 			s = inp.readLine ();
@@ -198,7 +254,7 @@ public class Map extends javax.swing.JComponent {
 					hex.ground = Integer.parseInt (st.nextToken ());
 					hex.level = Integer.parseInt (st.nextToken ());
 					hex.river = Integer.parseInt (st.nextToken ());
-					hex.rough = new Boolean (st.nextToken ()).booleanValue ();
+					hex.rough = (st.nextToken ().equals ("TRUE"));
 					hex.special = Integer.parseInt (st.nextToken ());
 					hex.street = Integer.parseInt (st.nextToken ());
 					hex.text = st.nextToken ().trim ();
@@ -207,6 +263,13 @@ public class Map extends javax.swing.JComponent {
 					newMap[i][j] = hex;
 				} /* for */
 			} /* for */
+			if (version.equals ("1.2")) {
+				// dont load any more
+			} else {
+				hexnumberColor = Color.decode (inp.readLine ());
+				hexnumbers = (inp.readLine ().equals ("TRUE"));
+				unitnames = (inp.readLine ().equals ("TRUE"));
+			} /* else */
 			inp.close ();
 			// all is fine, set the real values
 			X_Size = xsize;
@@ -221,28 +284,73 @@ public class Map extends javax.swing.JComponent {
 	} /* saveMap */
 
 	/**
+	 *  Sets the color for the hexnumbers.
+	 *
+	 *  @param c 	the color
+	 *
+	 */
+	public void setHexNumberColor (Color c) {
+		Debug.print ("Map - setHexNumberColor - c: " + c);
+		hexnumberColor = c;
+		repaintAll ();
+		repaint ();
+	} /* setHexNumberColor */
+
+	/**
+	 *  Gets the color for the hexnumbers.
+	 *
+	 *  @return 	the color
+	 *
+	 */
+	public Color getHexNumberColor () {
+		return (hexnumberColor);
+	} /* getHexNumberColor */
+
+	/**
 	 *  Sets, if to show the hexnumbers.
 	 *
 	 *  @param b 	if to show the hexnumbers
 	 *
 	 */
 	public void setShowHexNumbers (boolean b) {
+		Debug.print ("Map - setHexNumbers - b: " + b);
 		hexnumbers = b;
 		repaintAll ();
 		repaint ();
 	} /* setShowHexNumbers */
 	
 	/**
-	 *  sets, if to show the unitnames.
+	 *  Gets, if to show the hexnumbers.
+	 *
+	 *  @return 	if to show the hexnumbers
+	 *
+	 */
+	public boolean getShowHexNumbers () {
+		return (hexnumbers);
+	} /* getShowHexNumbers */
+	
+	/**
+	 *  Sets, if to show the unitnames.
 	 *
 	 *  @param b 	if to show the unitnames
 	 *
 	 */
 	public void setShowUnitNames (boolean b) {
+		Debug.print ("Map - setShowUnitNames - b: " + b);
 		unitnames = b;
 		repaintAll ();
 		repaint ();
 	} /* setShowUnitNames */
+
+	/**
+	 *  Gets, if to show the unitnames.
+	 *
+	 *  @return 	if to show the unitnames
+	 *
+	 */
+	public boolean getShowUnitNames () {
+		return (unitnames);
+	} /* getShowUnitNames */
 
 	/**
 	 *  Sets the level for a specific hex.
@@ -789,8 +897,9 @@ public class Map extends javax.swing.JComponent {
 			dbGraphics.drawImage (imageFac.colorImage (Images.flag, map[x][y].flag), posX, posY, this);
 		// Hex-count
 		dbGraphics.setFont (new Font ("Monospaced", Font.PLAIN, 12));
+		dbGraphics.setColor (Color.white);
 		if (hexnumbers) {
-			dbGraphics.setColor (Color.white);
+			dbGraphics.setColor (hexnumberColor);
 			dbGraphics.fillRect (posX + 20, posY + 46, 29, 10);
 			dbGraphics.setColor (Color.black);
 			dbGraphics.drawString (a, posX + 20, posY + 55);
@@ -811,7 +920,7 @@ public class Map extends javax.swing.JComponent {
 	} /* paintImg */
 	
 	/**
-	 *  handle the mousemotion.
+	 *  Handle the mousemotion.
 	 *
 	 *  @param e MouseEvent
 	 *
@@ -823,38 +932,47 @@ public class Map extends javax.swing.JComponent {
 			int x = (X - 10) / 49 + 1;
 			if (x % 2 == 0) 
 				Y = Y - 29;
-			int y = Y / 59 + 1;
-			Debug.print ("Map - processMouseMotionEvent - x: " + x + ", y: " + y);
-			if (!(x > X_Size) && (x > 0) && !(y > Y_Size) && (y > 0)) {
-				if ((oldX != x) || (oldY != y)) {
-					oldX = x; oldY = y;
-					repaint();
-				} /* if */
+			int y = Y / 59 + 1;			
+			int mouseMapX = X - (x-1)*49;
+			int mouseMapY = Y - (y-1)*59;
+			if ((mouseMapX >= 0) && (mouseMapY >= 0)) {
+				int rgbColor = mousemap.getRGB (mouseMapX, mouseMapY);
+				Point pt = null;
+				if (rgbColor == RGB_WHITE) {
+					pt = new Point(x, y);
+					if (x % 2 == 0)
+						pt.y = pt.y - 1;
+				} else if (rgbColor == RGB_RED) {
+					pt = new Point(x - 1, y - 1);
+				} else if (rgbColor == RGB_GREEN) {
+					pt = new Point(x - 1, y);
+				} else if (rgbColor == RGB_BLUE) {
+					pt = new Point(x + 1, y);
+				} else if (rgbColor == RGB_YELLOW) {
+					pt = new Point(x + 1, y - 1);
+				} else if (rgbColor == RGB_BLACK) {
+				} else {
+					System.err.println("Error in method getHex()");
+				} /* else */
+				if (pt == null || pt.x <= 0 || pt.y < 0 || pt.x > X_Size || pt.y > Y_Size) {
+					// invalid hex
+				} else {
+					// OK
+					if (x % 2 == 0)
+						pt.y = pt.y + 1;
+					if (pt.y > 0) {		
+						Debug.print ("Map - processMouseMotionEvent - x: " + pt.x + ", y: " + pt.y);
+						if ((oldX != pt.x) || (oldY != pt.y)) {
+							oldX = pt.x; oldY = pt.y;
+							repaint();
+						} /* if */
+					} /* if */
+				} /* else */			
 			} /* if */
+			//
 		} /* if */
 		super.processMouseMotionEvent (e);
 	} /* processMouseMotionEvent */
-
-	/** indicates, if to show the hexnumbers */
-	private boolean hexnumbers;
-	/** indicates, if to show the unitnames */
-	private boolean unitnames;
-	/** size of the map */
-	public int X_Size;
-	/** size of the map */
-	public int Y_Size;
-	/** the map-data */
-	private Hex [][] map;
-	/** offscreen-image */
-	private Image dbImage;
-	/** graphic-context of th offscreen-image */
-	private Graphics dbGraphics;
-	/** actual mouseposition */
-	private int oldX;
-	/** actual mouseposition */
-	private int oldY;
-	/** for any imagemanipulation */
-	private ImageFactory imageFac;
 
 	/**
 	 *  Returns the minimum size for the map.
@@ -871,7 +989,7 @@ public class Map extends javax.swing.JComponent {
 	 *  @return 	the size     
 	 */
 	public Dimension getPreferredSize () {
-		return (new Dimension (67 + (49 * (X_Size-1)),  29 + (59 * Y_Size)));
+		return (new Dimension (picSizeX,  picSizeY));
 	} /* getPreferredSize */
 
 	/**

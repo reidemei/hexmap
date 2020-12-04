@@ -1,6 +1,6 @@
 
                   ******************************************
-                  ****     Hexfield Map Editor 0.9.4    ****
+                  ****     Hexfield Map Editor 0.9.5    ****
                   ****  (c) 1998-2001 Jan Reidemeister  ****
                   ****        E-mail: J.R.@gmx.de       ****
                   ****  WWW: http://JanR.home.pages.de  ****
@@ -46,7 +46,7 @@
     * flags and custom text for every hexfield
     * save/load maps 
     * export to GIF or PNG
-    * custom units, that can be colored and rotated
+    * custom units with colors and direction
 
     All the graphics can be changed, so that you can customize the maps to
     your needs.
@@ -223,6 +223,7 @@
                            custom sized maps, changed fileformat
                            I think, it wont work with JRE 1.1 any longer, but not tested.
     22/01/2001 - 0.9.4   - added an PNG-export
+    27/01/2001 - 0.9.5   - different color for hexnumbers, improved calculation of the mouse position
 
       What's new:
     +++++++++++++++++++
@@ -247,6 +248,8 @@
       at a prompt and see if you can find the right switch for your version
       (1.2/1.3: '-Xmx??m' with ?? for the max size in MB).
     * PNG-Export
+    * set the color for the hexnumbers
+    * improved calculation of the mouse position
  
       To do:
     +++++++++++++++++++
@@ -272,4 +275,4 @@
     * After loading a map or creating a new one the scrollbars don't reflect the 
       new size. You have to resize the app to force them to do so.
 
-2001-01-22 Jan Reidemeister
+2001-01-27 Jan Reidemeister
